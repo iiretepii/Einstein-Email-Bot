@@ -7,7 +7,7 @@ global class EmailToCaseInboundHandler implements Messaging.InboundEmailHandler 
             Messaging.InboundEnvelope envelope
     ) {
         // create apex object and grab intent
-        EmailObject eo = new EmailObject(email);
+        EmailBotObject eo = new EmailBotObject(email);
 
         // assign email object to flow variable and start flow
         Map<String, Object> myMap = new Map<String, Object>();
