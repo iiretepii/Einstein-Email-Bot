@@ -1,7 +1,5 @@
 public with sharing class EmailAttachmentUtility {
 
-    public static Map<String,Messaging.InboundEmailHandler> messageIDToEmail_Map;
-
     @InvocableMethod(label='Save Inbound Email Attachments' description='Saves attachments for inbound emails to a specified record ID. Only works when email comes from an inbound email handler' category='Inbound Emails')
     public static List<Boolean> saveAttachmentsToRecord_Invocable(List<Request> emails) {
 
@@ -34,26 +32,41 @@ public with sharing class EmailAttachmentUtility {
 
         if (email.binaryAttachments != null && email.binaryAttachments.size() > 0) {
 
+            List<ContentVersion> contentVersions = new List<ContentVersion>();
+ 
             for (Messaging.InboundEmail.binaryAttachment att :email.binaryAttachments) {
-                // TODO: bulkify
                 ContentVersion cv = new ContentVersion();
                 cv.VersionData = att.body;
                 cv.Title = att.fileName;
                 cv.PathOnClient = att.fileName;
+                contentVersions.add(cv);
+            }
 
-                cv = [
+            if(!contentVersions.isEmpty()) {
+
+                insert contentVersions;
+
+                /*
+                Set<Id> contentVersionIds = new Set<Id>();
+                for(ContentVersion cv:contentVersions) {
+                    contentVersionIds.add(cv.Id);
+                }
+                */
+
+                List<ContentDocumentLink> contentDocumentLinks = new List<ContentDocumentLink>();
+
+                for(ContentVersion cv:[
                     SELECT  ContentDocumentId 
                     FROM    ContentVersion 
-                    WHERE   Id =:cv.Id 
-                    LIMIT   1
-                ];
-    
-                ContentDocumentLink cdl = new ContentDocumentLink();
-                cdl.LinkedEntityId = recordID;
-                cdl.ContentDocumentId = cv.ContentDocumentId;
-                cdl.ShareType = 'V';
-                insert cdl;
-
+                    WHERE   Id IN:contentVersions
+                ]) {
+                    contentDocumentLinks.add(new ContentDocumentLink(
+                        LinkedEntityId = recordID,
+                        ContentDocumentId = cv.ContentDocumentId,
+                        ShareType = 'V'
+                    ));
+                }
+                insert contentDocumentLinks;
                 success = true;
             }
         }

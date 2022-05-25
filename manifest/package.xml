@@ -2,12 +2,17 @@
 <Package xmlns="http://soap.sforce.com/2006/04/metadata">
 	<types>
 		<members>EinsteinServices</members>
-		<members>EmailBotObject</members>
+		<!--<members>EmailBotObject</members>
 		<members>EmailToCaseInboundHandler</members>
-		<members>EmailToCaseUtility</members>
+		<members>EmailToCaseUtility</members>-->
+
+		<members>GenericInboundEmailHandler</members>
+		<members>EmailObject</members>
+		<members>EmailAttachmentUtility</members>
+		<members>EmailMapSingleton</members>
 		<name>ApexClass</name>
 	</types>
-	<types>
+	<!--<types>
 		<members>Email_Bot_Setting__mdt.Case_Origin__c</members>
 		<members>Email_Bot_Setting__mdt.Case_Status__c</members>
 		<members>Email_Bot_Setting__mdt.Intent_Model_ID__c</members>
@@ -36,6 +41,6 @@
 	<types>
 		<members>Shipment__c-Shipment Layout</members>
 		<name>Layout</name>
-	</types>
+	</types>-->
 	<version>49.0</version>
 </Package>
